@@ -1,1 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Advanced Calculator</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #1e272e, #2c3e50);
+      font-family: "Segoe UI", sans-serif;
+    }
+    .calculator {
+      position: relative;
+      width: 360px;
+      background: #222;
+      border-radius: 12px;
+      padding: 60px 20px 20px 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+    }
+    .toggle-mode {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      background: #515252;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+      padding: 0;
+    }
+    .toggle-mode:hover {
+      background: #13856e;
+    }
+    .toggle-mode svg {
+      display: block;
+    }
+    .history {
+      width: 100%;
+      min-height: 24px;
+      color: #ccc;
+      font-size: 1.1em;
+      text-align: right;
+      margin-bottom: 4px;
+      user-select: none;
+    }
+    .display-main {
+      width: 100%;
+      height: 60px;
+      background: #111;
+      color: #00e0ff;
+      font-size: 2.15em;
+      text-align: right;
+      padding: 10px;
+      border-radius: 10px;
+      box-sizing: border-box;
+      margin-bottom: 15px;
+      overflow: hidden;
+      font-weight: bold;
+    }
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+    button {
+      height: 65px;
+      font-size: 1.2em;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #333;
+      color: #fff;
+    }
+    button:hover {
+      background: #444;
+    }
+    .number,
+    .operator,
+    .equal,
+    button.special {
+      font-size: 1.5em;
+    }
+    .operator {
+      background: #444;
+      color: #f1c40f;
+    }
+    .special {
+      background: #555;
+      color: #f39c12;
+    }
+    .clear {
+      background: #e74c3c;
+      color: white;
+    }
+    .equal {
+      background: #3498db;
+      color: white;
+    }
+    .equal:hover {
+      background: #2980b9;
+    }
+    body.light {
+      background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+    }
+    body.light .calculator {
+      background: #fff;
+      color: #000;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+    body.light .history {
+      color: #888;
+    }
+    body.light .display-main {
+      background: #f0f0f0;
+      color: #333;
+    }
+    body.light button {
+      background: #ddd;
+      color: #000;
+    }
+    body.light .operator {
+      background: #ccc;
+      color: #e67e22;
+    }
+    body.light .special {
+      background: #bbb;
+      color: #d35400;
+    }
+    body.light .clear {
+      background: #e74c3c;
+      color: white;
+    }
+    body.light .equal {
+      background: #3498db;
+      color: white;
+    }
+    body.light .equal:hover {
+      background: #2980b9;
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator">
+    <button class="toggle-mode" id="themeToggle" aria-label="Toggle Light/Dark Mode">
+      <span id="toggle-icon"></span>
+    </button>
+    <div id="history" class="history"></div>
+    <div id="display" class="display-main">0</div>
+    <div class="buttons">
+      <button class="special">%</button>
+      <button class="special">CE</button>
+      <button class="clear">C</button>
+      <button class="special">⌫</button>
+      <button class="special">1/x</button>
+      <button class="special">x²</button>
+      <button class="special">√x</button>
+      <button class="operator">÷</button>
+      <button class="number">7</button>
+      <button class="number">8</button>
+      <button class="number">9</button>
+      <button class="operator">×</button>
+      <button class="number">4</button>
+      <button class="number">5</button>
+      <button class="number">6</button>
+      <button class="operator">−</button>
+      <button class="number">1</button>
+      <button class="number">2</button>
+      <button class="number">3</button>
+      <button class="operator">+</button>
+      <button class="special">+/−</button>
+      <button class="number">0</button>
+      <button class="number">.</button>
+      <button class="equal">=</button>
+    </div>
+  </div>
+  <script>
+    const display = document.getElementById("display");
+    const history = document.getElementById("history");
+    const buttons = document.querySelectorAll(".buttons button");
+    const toggleBtn = document.getElementById("themeToggle");
+    const toggleIcon = document.getElementById("toggle-icon");
+    let currentInput = "";
+    let resultDisplayed = false;
+    let lastExpression = "";
 
+    function formatNumber(numStr) {
+      if (numStr === "" || isNaN(numStr)) return numStr;
+      let [intPart, decPart] = numStr.split(".");
+      intPart = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      return decPart !== undefined ? intPart + "." + decPart : intPart;
+    }
+    function prettyPrint(expr) {
+      return expr.replace(/\*/g, '×').replace(/\//g, '÷');
+    }
+    function updateDisplay(value) {
+      if (/^[\d.]+$/.test(value)) {
+        display.textContent = formatNumber(value);
+      } else {
+        display.textContent = prettyPrint(value).replace(/([0-9.]+)/g, (match) => formatNumber(match));
+      }
+    }
+    function updateHistory(expr) {
+      history.textContent = expr ? prettyPrint(expr) + " =" : "";
+    }
+    function calculate(op) {
+      let value = parseFloat(currentInput);
+      if (isNaN(value)) return;
+      switch(op) {
+        case "1/x":
+          currentInput = (1 / value).toString();
+          break;
+        case "x²":
+          currentInput = (value * value).toString();
+          break;
+        case "√x":
+          currentInput = Math.sqrt(value).toString();
+          break;
+        case "+/−":
+          currentInput = (value * -1).toString();
+          break;
+      }
+      updateDisplay(currentInput);
+      resultDisplayed = true;
+      updateHistory("");
+    }
+    buttons.forEach(button => {
+      button.addEventListener("click", () => {
+        let value = button.textContent;
+        if (button.classList.contains("number")) {
+          if (resultDisplayed) {
+            currentInput = "";
+            resultDisplayed = false;
+            updateHistory("");
+          }
+          currentInput += value;
+          updateDisplay(currentInput);
+        } else if (["+", "−", "×", "÷"].includes(value)) {
+          if (resultDisplayed) {
+            resultDisplayed = false;
+            if (/[\+\-\*\/]$/.test(currentInput)) {
+              currentInput = currentInput.slice(0, -1);
+            }
+          }
+          if (!/[\+\-\*\/]$/.test(currentInput) && currentInput !== "") {
+            currentInput += ({
+              "+": "+",
+              "−": "-",
+              "×": "*",
+              "÷": "/"
+            })[value];
+            updateDisplay(currentInput);
+          }
+        } else if (value === "=") {
+          try {
+            let result = Function("return " + currentInput)();
+            if (!isFinite(result)) throw Error();
+            lastExpression = currentInput;
+            updateHistory(lastExpression);
+            currentInput = result.toString();
+            updateDisplay(currentInput);
+            resultDisplayed = true;
+          } catch {
+            display.textContent = "Error";
+            updateHistory("");
+            currentInput = "";
+            resultDisplayed = false;
+          }
+        } else if (value === "C") {
+          currentInput = "";
+          display.textContent = "0";
+          updateHistory("");
+          resultDisplayed = false;
+        } else if (value === "CE") {
+          let parts = currentInput.split(/[\+\-\*\/]/);
+          parts.pop();
+          currentInput = parts.join("");
+          updateDisplay(currentInput || "0");
+        } else if (value === "⌫") {
+          currentInput = currentInput.slice(0, -1);
+          updateDisplay(currentInput || "0");
+        } else if (["1/x", "x²", "√x", "+/−"].includes(value)) {
+          calculate(value);
+        } else if (value === "%") {
+          try {
+            let parts = currentInput.split(/[\+\-\*\/]/);
+            let lastNum = parts.pop();
+            if (lastNum) {
+              let percentValue = (parseFloat(lastNum) / 100).toString();
+              parts.push(percentValue);
+              currentInput = parts.join("");
+              updateDisplay(currentInput);
+            }
+          } catch {
+            display.textContent = "Error";
+          }
+        } else if (value === ".") {
+          let parts = currentInput.split(/[\+\-\*\/]/);
+          let lastPart = parts[parts.length - 1];
+          if (!lastPart.includes(".")) {
+            currentInput += ".";
+            updateDisplay(currentInput);
+          }
+        }
+      });
+    });
+
+    function setToggleIcon(isLight) {
+      toggleIcon.innerHTML = isLight
+        ? `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e67e22" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>`
+        : `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f1c40f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 0 1 11.21 3a8 8 0 1 0 9.79 9.79z"/></svg>`;
+    }
+    setToggleIcon(document.body.classList.contains("light"));
+    toggleBtn.addEventListener("click", () => {
+      document.body.classList.toggle("light");
+      setToggleIcon(document.body.classList.contains("light"));
+    });
+  </script>
+</body>
+</html>
