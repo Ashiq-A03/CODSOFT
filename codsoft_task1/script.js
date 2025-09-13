@@ -1,4 +1,3 @@
-// Mobile Navigation Toggle
 document.addEventListener('DOMContentLoaded', function() {
     const navToggle = document.querySelector('.nav-toggle');
     const navMenu = document.querySelector('.nav-menu');
@@ -6,8 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (navToggle && navMenu) {
         navToggle.addEventListener('click', function() {
             navMenu.classList.toggle('active');
-            
-            // Animate hamburger menu
+
             const spans = navToggle.querySelectorAll('span');
             spans.forEach((span, index) => {
                 if (navMenu.classList.contains('active')) {
@@ -21,8 +19,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
-    
-    // Close mobile menu when clicking on a link
     const navLinks = document.querySelectorAll('.nav-menu a');
     navLinks.forEach(link => {
         link.addEventListener('click', () => {
