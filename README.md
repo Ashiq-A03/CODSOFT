@@ -1,9 +1,5 @@
 # 🌟 CODSOFT Web Development Internship
 
-![GitHub repo size](https://img.shields.io/github/repo-size/your-username/your-repo-name?color=blue)  
-![GitHub last commit](https://img.shields.io/github/last-commit/your-username/your-repo-name?color=green)  
-![License](https://img.shields.io/badge/license-MIT-orange)
-
 Welcome to my repository for the **CodSoft Web Development Virtual Internship**!  
 This repo contains all the tasks I built during the internship program.  
 
