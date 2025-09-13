@@ -22,7 +22,7 @@ It emphasizes *practical learning* through projects and task-based exercises.
 
 3. **Task 3 – Calculator**  
    - A functional calculator built with HTML, CSS, and JavaScript.  
-   - [🔗 Live Demo](https://htmlpreview.github.io/?https://raw.githubusercontent.com/Ashiq-A03/CODSOFT/refs/heads/main/Calculator/index.html) | [📂 Source Code](https://github.com/Ashiq-A03/CODSOFT/tree/main/codsoft_task3)  
+   - [🔗 Live Demo](https://htmlpreview.github.io/?https://raw.githubusercontent.com/Ashiq-A03/CODSOFT/refs/heads/main/codsoft_task3/index.html) | [📂 Source Code](https://github.com/Ashiq-A03/CODSOFT/tree/main/codsoft_task3)  
 
 ---
 
